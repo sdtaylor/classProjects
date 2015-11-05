@@ -67,7 +67,7 @@ phats = c(phats, 1-sum(phats)) #Add on >=7 trees
 lnNullModel=dmultinom(x=obs.counts, size=n,prob=phats, log=TRUE)
 
 Gsq= -2*(lnMLE - lnNullModel) #liklehood ratio. They are already ln, so we only need to subtract them. 
-df=length(phats)-1-1   #number of parameters in fully parameterized model, minus 1 cause we don't estimate teh final, minus 1 from the lambda only model.
+df=length(phats)-1-1   #number of parameters in fully parameterized model, minus 1 cause we don't estimate parameter 8, and minus 1 parameter from the lambda only model.
 Gsq.crit <- qchisq(p=0.95,df)
 pvalue <- 1-pchisq(Gsq,df)
 print(pvalue)
@@ -75,8 +75,8 @@ print(pvalue)
 ###################################################################
 #   3g
 
-obs.counts=c(7,16,20,24,17,9,5,1,1)
-numTrees=0:8
+obs.counts=c(7,16,20,24,17,9,5,1,1) #number of counts for each type of quadrat
+numTrees=0:8 #number of trees in each type of quadrat
 
 meanX=sum(obs.counts*numTrees)/100 #Total number of trees / 100
 print(meanX)
