@@ -1,3 +1,42 @@
+##########################################################
+#Problem 2e - parametric bootstrap
+samp1=c(2,7,3,2,4,6)
+samp2=c(1,1,1,2,2,0,1,1)
+samp3=c(2,4,3,0,2,4,1)
+n=21
+
+likelihood_null=function(one,two,three,n){
+  return(log(sum(one,two,three)/n))
+}
+
+likelihood_alt=function(one,two,three,n){
+  return(log(sum( mean(one), mean(two), mean(three))))
+}
+
+logLikeNull=likelihood_null(samp1, samp2, samp3, n)
+logLikeAlt=likelihood_alt(samp1, samp2, samp3, n)
+
+lnRatio=-2*(logLikeNull-logLikeAlt)
+
+#PBLRT
+
+pHatNull=sum(samp1, samp2, samp3)/n
+
+lnRatioArray=c()
+for(i in 1:20000){
+  samp1Boot=rpois(length(samp1), pHatNull)
+  samp2Boot=rpois(length(samp2), pHatNull)
+  samp3Boot=rpois(length(samp3), pHatNull)
+
+  logLikeNull=likelihood_null(samp1Boot, samp2Boot, samp3Boot, n)
+  logLikeAlt=likelihood_alt(samp1Boot, samp2Boot, samp3Boot, n)
+  lnRatioBoot=-2*(logLikeNull-logLikeAlt)
+  lnRatioArray=c(lnRatioArray, lnRatioBoot)
+}
+
+hist(lnRatioArray)
+abline(v=lnRatio)
+
 ############################################################
 #Assignment 2 - 3d
 
