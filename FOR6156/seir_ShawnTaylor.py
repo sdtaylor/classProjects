@@ -1,9 +1,10 @@
 from SEIR_homework import *
 import pylab
 
-for infection_time in [1,3,5]:
+for infection_time in [1,2,3,4,5]:
     ca=seir()
     ca.inf_time=infection_time
+    ca.max_time=300
     ca.Run()
 
     pylab.plot(ca.ydataH, 'b', label='Susceptible')
@@ -13,4 +14,6 @@ for infection_time in [1,3,5]:
 
     pylab.title('Infection time: '+str(infection_time))
     pylab.legend()
-    pylab.show()
+    pylab.figure()
+
+pylab.show()
