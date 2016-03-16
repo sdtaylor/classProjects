@@ -1,20 +1,7 @@
 import numpy as np
 import pylab
-
-#Generic function to plot a time series with many variables
-#values: numpy array. columns are variables, rows are time steps
-#labels: variable names for each of the columns
-#time: numpy 1d array for the x axis
-def plotTimeSeries(values, labels, time,
-                   title='', xlabel='', ylabel='',legendLocation='upper left'):
-    colors=['-b','-g','-r','-c','-m','-y']
-
-    for colNum, labelName in enumerate(labels):
-        pylab.plot(time, values[:,colNum], colors[colNum], label=labelName)
-    pylab.xlabel(xlabel)
-    pylab.ylabel(ylabel)
-    pylab.legend(loc=legendLocation)
-    pylab.show()
+import matplotlib.pyplot as plt
+from mpl_toolkits.mplot3d import Axes3D
 
 #############################################################################
 #[x, y, px, py] <- locations of variables inside v
@@ -34,19 +21,28 @@ def system1(v, t):
     return(dx, dy, dpx, dpy)
 
 
-x=0.02
-y=0.2
-px=0.001
-py=0.2
-
 #Values to go into the rk4 function
 dt=0.01
-fintime=20.0
+fintime=500.0
 tim=np.arange(0.0, fintime, dt)
-t0 = (x,y,px,py)
 
-Xout=pylab.rk4(system1, t0, tim)
-plotTimeSeries(Xout, ['x','y','px','py'], tim)
+# (x,y,px,py) <- intial values
+Xout1=pylab.rk4(system1, (0.02, 0.2, 0.001, 0.2), tim)
+Xout2=pylab.rk4(system1, (0.01, 0.3, 0.002, 0.1), tim)
+
+fig=plt.figure()
+ax = fig.gca(projection='3d')
+
+#This system has 4 dimmensions but just looking at 3 still shows different patterns between the two starting conditions.
+ax.plot(Xout1[:,0], Xout1[:,1], Xout1[:,2], '-r')
+ax.plot(Xout2[:,0], Xout2[:,1], Xout2[:,2], '-b')
+ax.set_xlabel('x')
+ax.set_ylabel('y')
+ax.set_zlabel('z')
+ax.set_title('System 1')
+plt.show()
+########################################################
+########################################################
 ########################################################
 #2nd system
 a=0.2
@@ -65,15 +61,30 @@ def system2(v,t):
     #dz= b + x*z - c*z
     dz= b + v[0]*v[2] - c*v[2]
 
+    return(dx, dy, dz)
 
-x=0.02
-y=0.2
-z=0.1
 
-fintime=150.0
+def runSystem2(t0, fintime, dt):
+    Xout=pylab.rk4(system2, t0, tim)
+    plotTimeSeries(Xout, ['x','y','z'], tim)
+
+
+fintime=500.0
 dt=0.01
 tim=np.arange(0.0, fintime, dt)
 
-t0=(x,y,z)
-Xout=pylab.rk4(system2, t0, tim)
-plotTimeSeries(Xout, ['x','y','z'], tim)
+#(x,y,z)# <- initial conditions
+Xout1=pylab.rk4(system2, (0.02, 0.2, 0.1), tim)
+Xout2=pylab.rk4(system2, (0.03, 0.1, 0.2), tim)
+
+
+fig=plt.figure()
+ax = fig.gca(projection='3d')
+
+ax.plot(Xout1[:,0], Xout1[:,1], Xout1[:,2], '-r')
+ax.plot(Xout2[:,0], Xout2[:,1], Xout2[:,2], '-b')
+ax.set_xlabel('x')
+ax.set_ylabel('y')
+ax.set_zlabel('z')
+ax.set_title('System 2')
+plt.show()
